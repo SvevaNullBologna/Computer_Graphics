@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <title>Canvas lezione 1 </title>
+      <style>
+         #mycanvas{border:1px solid rgb(43, 163, 73); padding: 2%;}
+         .button{border:1px solid rebeccapurple; padding: 1%;}
+      </style>
+   </head>
+   <body>
+      <canvas id='mycanvas' width='400' height='400'>
+         Your browser does not support the HTML5 canvas element
+      </canvas>
+
+      <p>
+      <input type="button" value="RECTANGLE" onclick="draw_rectangle()">
+      <input type="button" value="CURVE" onclick="draw_curve()">
+      <input type="button" value="LINE" onclick="draw_line()">
+      <input type="button" value="CIRCLE" onclick="draw_circle()">
+      </p>
+   
+
+      <script>
+         var mycanvas = document.getElementById("mycanvas")
+         var context = mycanvas.getContext('2d')
+         context.strokeStyle = "#0000FF";
+         context.fillStyle = "orange";
+         context.lineWidth = 5;
+         function draw_rectangle(){
+            context.fillRect(10,10,110,50)
+         }
+
+         function draw_curve(){
+            context.beginPath()
+            context.moveTo(20,100)
+            context.quadraticCurveTo(70,0, 150,100)
+            context.stroke()
+         }
+
+         function draw_line(){
+            context.beginPath();
+            context.moveTo(0,50)
+            context.lineTo(150,50)
+            context.stroke()
+         }
+
+         function draw_circle(){
+            context.beginPath()
+            context.arc(200, 200, 50, 0, 2 * Math.PI, false) //centro : x, y ; raggio; inizio Angle; fine Angle; orario/antiorario
+            context.stroke()
+         }
+
+         function toggle_mouse_listener(){
+
+         }
+      
+      </script>
+   </body>
+
+
+   
+</html>
