@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Text and raster draw exercise </title>
+        <style>
+            #mycanvas{border:1px solid red;}
+        </style>
+    </head>
+    <body>
+        <canvas id="mycanvas" width="800" height="400"></canvas> 
+        <script>
+            window.onload = function(){ //necessary, because the image bust be loaded first. 
+            //then we use it
+            var canvas = document.getElementById("mycanvas")
+            var context = canvas.getContext('2d')
+            //Let's draw it in two ways
+            context.font = "bold 32px Arial"
+            context.textAlign = "left"
+            context.textBaseline = "middle"
+            context.strokeStyle = "blue"
+            context.strokeText("drawing stars", 200, 100)
+
+            var img = document.getElementById("star_image")
+            context.drawImage(img, 200, 200)
+            }
+
+
+            //or we use the soruce link 
+            context.drawImage("star.png", 100, 100)
+
+        </script>
+        <img id="star_image" src="star.png"> 
+    </body>
+
+</html>

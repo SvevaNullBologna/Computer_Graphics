@@ -13,18 +13,52 @@
         </style>
     </head>
 
-    <body onLoad=initialise()>
+    <body onLoad=initialise()> 
         <canvas id="mycanvas" width="400" height="400"> 
             canvas non supportato 
         </canvas>
-        var mycanvas; 
 
 
         <script>
+            /*RETTANGOLO CHE SI MUOVE CON IL MOUSE.
+            PER ATTIVARE USA IL DOUBLE CLICK */
+            var mycanvas, context ; 
+            var moving = false ; 
+
+            var P_x = 10
+            var P_y = 10
+            var b = 110
+            var h = 50 
+
             function initialise(){
-                
+                mycanvas = document.getElementById("mycanvas")
+                context = mycanvas.getContext('2d')
+                context.fillStyle = "orange"
+                context.lineWidth = 5;
+                context.fillRect(P_x, P_y, b, h)
+
+                move_rect()
             } 
+            function move_rect(){
+                mycanvas.ondblclick = function(e){
+                    moving = !moving
+                    console.log('moving = ', moving);
+                
+                }
+                mycanvas.onmousemove = function(e){
+                    console.log('mouse moving.');
+                    if(moving){   
+                        context.clearRect(P_x, P_y, P_x + b , P_y + h)
+                        P_x += e.movementX;
+                        P_y += e.movementY;  
+                        context.fillRect(P_x, P_y, b, h )
+                    }
+                }
+            
+            }
+
         </script> 
     </body>
 
+   
 </html>
