@@ -5,6 +5,7 @@
 
 //algoritmo di de Casteljau per valutazione
 //curva di Bézier di grado generico n in coordinate floating point
+
 function compute_bezier(fxt, fyt, n, m){
 // input
 // fxt, fyt: array di ascisse e ordinate dei punti di controllo
@@ -13,6 +14,7 @@ function compute_bezier(fxt, fyt, n, m){
 // output
 // vxp, vyp: array di ascisse e ordinate dei punti della curva
 
+    var vxp = [], vyp = []
     var h=1/m;
     var fxp=[], fyp=[]; //copia dei cp per de Casteljau
     var t,d1,d2; 
@@ -27,8 +29,8 @@ function compute_bezier(fxt, fyt, n, m){
         t=k*h;
         d1=t;
         d2=1.0-t;
-        for (var j=1; j<n; j++)
-           for (var i=0; i<n-j; i++){
+        for (var j=1; j<=n; j++)
+           for (var i=0; i<=n-j; i++){
               fxp[i]=d1*fxp[i+1]+d2*fxp[i];
               fyp[i]=d1*fyp[i+1]+d2*fyp[i]; 
         }
@@ -38,5 +40,9 @@ function compute_bezier(fxt, fyt, n, m){
 //ultimo punto della curva
    vxp[m]=fxt[n];
    vyp[m]=fyt[n];
-   win_view_convert();
+   
+   return {
+        x: vxp,
+        y: vyp
+   } 
 }

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            #mycanvas{
+                padding: 0px;
+                margin: 20px;
+                background: #f7ffe3;
+                border: thin inset #0000ff;
+            }
+        </style>
+    </head>
+    <body onLoad=initialise()>
+        <canvas id="mycanvas" width="500" height="500"> 
+            canvas non supportato
+        </canvas>
+
+        <input type="button" value="ANNULLA" onclick="reset_point()">
+
+        <script src="compute_bezier.js"></script>
+        <script>
+            var mycanvas, context ; 
+            var fxt = [], fyt = []; 
+            var max_points = 4; 
+
+            function initialise(){
+                mycanvas = document.getElementById("mycanvas")
+                context = mycanvas.getContext('2d')
+
+                var canvas_coord = mycanvas.getBoundingClientRect();
+      
+                mycanvas.onclick = function(e) {
+                    var click_x = e.clientX - canvas_coord.left
+                    var click_y = e.clientY -  canvas_coord.top
+                        //disegna un quadratino centrato sul punto (per puro feedback )
+                    set_point(click_x, click_y)
+                    draw_curve()
+                
+            } 
+
+            function set_point(click_x, click_y){
+                if(fxt.length < max_points){
+                    draw_point(click_x, click_y)
+                    fxt.push(click_x)  //cordinate viewport
+                    fyt.push(click_y) //coordinate viewport
+                }
+                
+                draw_curve()
+            }
+
+            function draw_point(click_x, click_y){
+                context.fillRect(click_x - 5, click_y - 5, 20, 20)
+            }
+
+            function draw_curve(){
+                var curve;
+                if(fxt.length === max_points){
+                    curve = compute_bezier(fxt, fyt,fxt.length - 1, 1000) 
+                    context.beginPath(); 
+                    context.moveTo(curve.x[0], curve.y[0])
+                    for(let i=1; i<curve.x.length; i++){
+                    context.lineTo(curve.x[i], curve.y[i])
+                    }
+
+                    context.strokeStyle = "red"
+                    context.lineWidth = 2
+                    context.stroke()
+                }
+
+                
+            }
+        }
+
+            
+            
+        </script>
+    </body>
+</html>
