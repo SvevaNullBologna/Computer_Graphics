@@ -15,15 +15,21 @@
             canvas non supportato
         </canvas>
 
+        <input type="button" value="TRASLA" onclick="traslate()">
+        <input type="button" value="RUOTA" onclick="rotate()">
+        <input type="button" value="SCALA" onclick="scale()">
+        <input type="button" value="PANNING" onclick="">
+
         <script src="compute_bezier.js"></script>
         <script src="control_points.js"></script>
+        <script src="geometrical_transformation.js"></script>
         <script>
             var mycanvas, context ; 
             var fxt = [], fyt = []; 
             var max_points = 4; 
             var moving_index = -1 
             enable_move_point = false 
-            
+
             function initialise(){
                 mycanvas = document.getElementById("mycanvas")
                 context = mycanvas.getContext('2d')
@@ -33,6 +39,7 @@
                 mycanvas.onmousedown = function(e) {
                     var click_x = e.clientX - canvas_coord.left
                     var click_y = e.clientY -  canvas_coord.top
+
                     //disegna un quadratino centrato sul punto (per puro feedback )
                     if(fxt.length < max_points){
                         fxt.push(click_x)  //cordinate viewport
@@ -46,7 +53,8 @@
                     }
                     else if(enable_move_point){
                         moving_index = is_overing_on_point(click_x, click_y, fxt, fyt, max_points)
-                    }
+                    }  
+                    
                 }
 
                 mycanvas.onmousemove = function(e){
@@ -65,6 +73,21 @@
                         moving_index = -1 
                 }
                             
+            }
+
+            function traslate(){
+                traslateCurve(fxt, fyt, 20, 20)
+                refresh_scene(context, mycanvas, fxt, fyt)
+            }
+
+            function rotate(){
+                rotateCurve(fxt, fyt)
+                refresh_scene(context, mycanvas, fxt, fyt)
+            }
+
+            function scale(){
+                scaleCurve(fxt, fyt)
+                refresh_scene(context, mycanvas, fxt, fyt)
             }
             
         </script>
