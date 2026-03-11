@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body onLoad="initialize()">
+        <canvas width="300" height="300" id="my_canvas", style="border:1px solid black;">
+            canvas non supportato
+        </canvas>
+
+        <input type="button" value="INGRANDISCI" onclick="show_plus_scale()">
+        <input type="button" value="RIDUCI" onclick="show_littler_scale()">
+        <script src="geometric_operations.js"></script>
+        <script>
+
+            var gl, canvas, shared_program, vertex_buffer;
+            var p1, p2, p3;
+
+            function initialize(){
+                //CPU e GPU hanno memorie separate. 
+                //Gli array Javascript si trovano nella memoria della CPU 
+                //i buffer sono scatole create nella memoria della GPU. Dobbiamo copiare i numeri delle coordinate dalla CPU alla GPU
+
+                canvas = document.getElementById('my_canvas'); 
+                //step 1: get context 
+		        gl = canvas.getContext('webgl');
+                //step 2: declare Geometry and buffer
+            
+                p1 = {x: -0.5, y: 0.5, z: 0.0}
+                p2 = {x: -0.5, y: -0.5,z: 0.0}
+                p3 = {x:  0.0, y: 0.5, z: 0.0}
+
+                vertex_buffer = gl.createBuffer();
+
+                //step 3: shaders
+                //il vertex shader decide DOVE si trovano i punti sullo schermo
+                var vert_code =
+      		    'attribute vec3 coordinates;' +
+      		    'void main(void) {' +
+      		    ' gl_Position = vec4(coordinates, 1.0);' + //aggiungiamo la coordinata omogenea w in modo da ottenere (x/w, y/w, z/w). 0 = vettore infinito;
+      		    '}';
+                var vert_shader =  gl.createShader(gl.VERTEX_SHADER)
+                gl.shaderSource(vert_shader, vert_code)
+                gl.compileShader(vert_shader)
+            
+                //il fragment shader decide di che colore è ogni pixel dentro la forma
+                var frag_code =
+      		    'void main(void) {' +
+      		    'gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);' + 
+      		    '}';
+                var frag_shader = gl.createShader(gl.FRAGMENT_SHADER)
+                gl.shaderSource(frag_shader, frag_code)
+                gl.compileShader(frag_shader)
+
+                //creazione di un unico programma collegando quelli precedenti
+                shared_program = gl.createProgram()
+                gl.attachShader(shared_program, vert_shader)
+                gl.attachShader(shared_program, frag_shader)
+                gl.linkProgram(shared_program)
+                gl.useProgram(shared_program)
+
+                gl.enable(gl.DEPTH_TEST); // attiviamo il test di profondità 
+
+                gl.clearColor(0.1, 0.1, 0.1, 1.0); //impostiamo lo sfondo
+                
+                draw(p1, p2, p3, vertex_buffer);
+
+            }
+            
+
+            function draw(){
+                var vertex = [
+                    p1.x, p1.y, p1.z, 
+                    p2.x, p2.y, p2.z,
+                    p3.x, p3.y, p3.z
+                ];
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertex), gl.STATIC_DRAW); //riempiamo la scatola, ma non specifichiamo come usarla
+            
+                //associare shader ai buffer 
+                var coord = gl.getAttribLocation(shared_program, "coordinates");
+                gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0,0);
+                gl.enableVertexAttribArray(coord);
+
+                //disegnare
+                
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                gl.viewport(0, 0, canvas.width, canvas.height);
+
+                gl.drawArrays(gl.TRIANGLES, 0, 3); //partiamo dal primo vertice, disegnamo i tre vertici 
+
+            }
+
+            function show_plus_scale(){
+                scale(p1,2);
+                scale(p2,2);
+                scale(p3,2);
+                draw();
+            }
+
+            function show_littler_scale(){
+                scale(p1,1/2)
+                scale(p2,1/2)
+                scale(p3,1/2)
+                draw();
+            }
+        </script>
+
+    </body>
+</html>
